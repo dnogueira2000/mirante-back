@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -41,6 +42,8 @@ public class EventServiceImpl implements EventService {
     public EventDTO create(EventDTO eventDTO) {
         Event event = convertToEntity(eventDTO);
         event.setDeleted(false);
+        event.setCreatedAt(LocalDateTime.now());
+        event.setUpdatedAt(LocalDateTime.now());
        
         return convertToDto(eventRepository.save(event));
     }
@@ -55,6 +58,7 @@ public class EventServiceImpl implements EventService {
                     existingEvent.setDescription(eventDTO.getDescription());
                     existingEvent.setEventDateTime(eventDTO.getEventDateTime());
                     existingEvent.setLocation(eventDTO.getLocation());
+                    existingEvent.setUpdatedAt(LocalDateTime.now());
                     return convertToDto(eventRepository.save(existingEvent));
                 })
                 .orElseThrow(() -> new RuntimeException("Evento não encontrado ou já excluído"));
@@ -67,6 +71,7 @@ public class EventServiceImpl implements EventService {
                 .filter(event -> !event.isDeleted())
                 .ifPresentOrElse(event -> {
                     event.setDeleted(true);
+                    event.setUpdatedAt(LocalDateTime.now());
                     eventRepository.save(event);
                 }, () -> {
                     throw new RuntimeException("Evento não encontrado ou já excluído");
@@ -80,6 +85,8 @@ public class EventServiceImpl implements EventService {
         dto.setDescription(event.getDescription());
         dto.setEventDateTime(event.getEventDateTime());
         dto.setLocation(event.getLocation());
+        dto.setCreatedAt(event.getCreatedAt());
+        dto.setUpdatedAt(event.getUpdatedAt());
        
         return dto;
     }

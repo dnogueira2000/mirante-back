@@ -50,7 +50,9 @@ public class EventControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(eventDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.title").value("Evento de Teste"));
+                .andExpect(jsonPath("$.title").value("Evento de Teste"))
+                .andExpect(jsonPath("$.createdAt").isNotEmpty())
+                .andExpect(jsonPath("$.updatedAt").isNotEmpty());
     }
 
     @Test

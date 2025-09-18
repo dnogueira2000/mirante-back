@@ -24,5 +24,9 @@ public class EventDTO {
 
     @Size(max = 200, message = "O local deve ter no máximo 200 caracteres")
     private String location;
+    
+    private LocalDateTime createdAt;
+    
+    private LocalDateTime updatedAt;
 }
 

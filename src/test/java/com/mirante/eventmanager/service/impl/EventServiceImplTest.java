@@ -35,8 +35,10 @@ class EventServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        event1 = new Event(1L, "Título Evento 1", "Descrição Evento 1", LocalDateTime.now().plusDays(1), "Local 1", false);
-        event2 = new Event(2L, "Título Evento 2", "Descrição Evento 2", LocalDateTime.now().plusDays(2), "Local 2", false);
+    	LocalDateTime now = LocalDateTime.now();
+    	
+        event1 = new Event(1L, "Título Evento 1", "Descrição Evento 1", LocalDateTime.now().plusDays(1), "Local 1", false, now, now);
+        event2 = new Event(2L, "Título Evento 2", "Descrição Evento 2", LocalDateTime.now().plusDays(2), "Local 2", false, now, now);
 
         eventDTO1 = new EventDTO();
         eventDTO1.setId(1L);
@@ -44,6 +46,8 @@ class EventServiceImplTest {
         eventDTO1.setDescription("Descrição Evento 1");
         eventDTO1.setEventDateTime(LocalDateTime.now().plusDays(1));
         eventDTO1.setLocation("Local 1");
+        eventDTO1.setCreatedAt(now);
+        eventDTO1.setUpdatedAt(now);
 
         eventDTO2 = new EventDTO();
         eventDTO2.setId(2L);
@@ -51,6 +55,8 @@ class EventServiceImplTest {
         eventDTO2.setDescription("Descrição Evento 2");
         eventDTO2.setEventDateTime(LocalDateTime.now().plusDays(2));
         eventDTO2.setLocation("Local 2");
+        eventDTO2.setCreatedAt(now);
+        eventDTO2.setUpdatedAt(now);
     }
 
     @Test
@@ -65,6 +71,8 @@ class EventServiceImplTest {
         assertEquals(2, result.getTotalElements());
         assertEquals(eventDTO1.getTitle(), result.getContent().get(0).getTitle());
         assertEquals(eventDTO2.getTitle(), result.getContent().get(1).getTitle());
+        assertEquals(eventDTO1.getCreatedAt(), result.getContent().get(0).getCreatedAt());
+        assertEquals(eventDTO2.getUpdatedAt(), result.getContent().get(1).getUpdatedAt());
     }
 
     @Test
@@ -79,13 +87,14 @@ class EventServiceImplTest {
 
     @Test
     void create_shouldReturnCreatedEventDTO() {
+    	LocalDateTime now = LocalDateTime.now();
         EventDTO newEventDTO = new EventDTO();
         newEventDTO.setTitle("Novo Evento");
         newEventDTO.setDescription("Descrição Novo Evento");
         newEventDTO.setEventDateTime(LocalDateTime.now().plusDays(3));
         newEventDTO.setLocation("Novo Local");
 
-        Event newEvent = new Event(3L, "Novo Evento", "Descrição Novo Evento", LocalDateTime.now().plusDays(3), "Novo Local", false);
+        Event newEvent = new Event(3L, "Novo Evento", "Descrição Novo Evento", LocalDateTime.now().plusDays(3), "Novo Local", false, now, now);
         when(eventRepository.save(any(Event.class))).thenReturn(newEvent);
 
         EventDTO result = eventService.create(newEventDTO);
